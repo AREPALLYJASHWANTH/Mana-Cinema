@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">మానా సినిమా</string>
+    <string name="app_tagline">సినిమాలు • సిరీస్ • వినోదం</string>
+    <string name="home">హోమ్</string>
+    <string name="series">సిరీస్</string>
+    <string name="downloads">డౌన్‌లోడ్</string>
+    <string name="search">శోధన</string>
+    <string name="profile">ప్రొఫైల్</string>
+    <string name="back">వెనక్కి</string>
+    <string name="cancel">రద్దు</string>
+    <string name="save">సేవ్</string>
+    <string name="sign_out">సైన్ అవుట్</string>
+    <string name="settings">సెట్టింగ్</string>
+    <string name="language">ಭాష</string>
+</resources>

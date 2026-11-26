@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">মানা সিনেমা</string>
+    <string name="app_tagline">সিনেমা • সিরিজ • বিনোদন</string>
+    <string name="home">হোম</string>
+    <string name="series">সিরিজ</string>
+    <string name="downloads">ডাউনলোড</string>
+    <string name="search">অনুসন্ধান</string>
+    <string name="profile">প্রোফাইল</string>
+    <string name="back">পেছনে</string>
+    <string name="cancel">বাতিল</string>
+    <string name="save">সংরক্ষণ</string>
+    <string name="sign_out">সাইন আউট</string>
+    <string name="settings">সেটিংস</string>
+    <string name="language">ভাষা</string>
+</resources>

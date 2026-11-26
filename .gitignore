@@ -1,0 +1,27 @@
+# Secrets and credentials
+.env
+.env.*
+!.env.example
+.acside/
+secrets.properties
+local.properties
+google-services.json
+firebase-adminsdk*.json
+service-account*.json
+server/service-account.json
+*.jks
+*.keystore
+
+# Build outputs
+.gradle/
+build/
+app/build/
+**/build/
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Local IDE files
+.idea/
+*.iml
+.DS_Store

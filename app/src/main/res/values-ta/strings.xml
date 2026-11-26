@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">மானா சினிமா</string>
+    <string name="app_tagline">திரைப்படங்கள் • தொடர்கள் • பொழுதுபோக்கு</string>
+    <string name="home">முகப்பு</string>
+    <string name="series">தொடர்கள்</string>
+    <string name="downloads">பதிவிறக்கங்கள்</string>
+    <string name="search">தேடல்</string>
+    <string name="profile">சுயவிவரம்</string>
+    <string name="back">பின்</string>
+    <string name="cancel">ரத்துசெய்</string>
+    <string name="save">சேமி</string>
+    <string name="sign_out">வெளியேறு</string>
+    <string name="settings">அமைப்புகள்</string>
+    <string name="language">மொழி</string>
+</resources>

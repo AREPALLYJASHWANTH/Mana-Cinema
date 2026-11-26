@@ -1,0 +1,157 @@
+{
+  "rules": {
+    "movies": {
+      ".read": "auth != null",
+      ".indexOn": ["timestamp", "createdAt", "id"],
+      "$id": {
+        ".write": "auth != null && auth.token.admin == true",
+        ".validate": "newData.hasChildren(['title', 'poster']) && newData.child('title').isString() && newData.child('poster').isString()"
+      }
+    },
+    "webseries": {
+      ".read": "auth != null",
+      ".indexOn": ["timestamp", "createdAt", "id"],
+      "$id": {
+        ".write": "auth != null && auth.token.admin == true",
+        ".validate": "newData.hasChildren(['title', 'poster']) && newData.child('title').isString() && newData.child('poster').isString()"
+      }
+    },
+    "categories": {
+      ".read": true,
+      ".indexOn": "name",
+      "$id": {
+        ".write": "auth != null && auth.token.admin == true"
+      }
+    },
+    "maintenance": {
+      ".read": true,
+      ".write": "auth != null && auth.token.admin == true",
+      ".validate": "newData.hasChildren(['enabled', 'message']) && newData.child('enabled').isBoolean() && newData.child('message').isString()"
+    },
+    "notifications": {
+      ".read": "auth != null && (auth.token.admin == true || (query.orderByChild == 'timestamp' && query.limitToLast == 50))",
+      ".indexOn": ["timestamp", "pushed"],
+      "$id": {
+        ".write": "auth != null && auth.token.admin == true",
+        ".validate": "newData.hasChildren(['title', 'message', 'timestamp']) && newData.child('title').isString() && newData.child('message').isString() && newData.child('timestamp').isNumber() && (!newData.hasChild('image') || (newData.child('image').val() is String && newData.child('image').val().startsWith('https://') && newData.child('image').val().length <= 1000)) && (!newData.hasChild('imageUrl') || (newData.child('imageUrl').val() is String && newData.child('imageUrl').val().startsWith('https://') && newData.child('imageUrl').val().length <= 1000))"
+      }
+    },
+    "user_notifications": {
+      "$uid": {
+        ".read": "auth != null && (auth.token.admin == true || auth.uid == $uid)",
+        "$id": {
+          ".write": "auth != null && auth.token.admin == true",
+          ".validate": "newData.hasChildren(['title', 'message', 'timestamp']) && newData.child('title').isString() && newData.child('message').isString() && newData.child('timestamp').isNumber() && (!newData.hasChild('imageUrl') || (newData.child('imageUrl').val() is String && newData.child('imageUrl').val().startsWith('https://') && newData.child('imageUrl').val().length <= 1000))"
+        }
+      }
+    },
+    "plans": {
+      ".read": true,
+      "$id": {
+        ".write": "auth != null && auth.token.admin == true",
+        ".validate": "newData.hasChildren(['name', 'days', 'devices']) && newData.child('days').isNumber() && newData.child('days').val() > 0 && newData.child('devices').isNumber() && newData.child('devices').val() > 0"
+      }
+    },
+    "ads": {
+      ".read": true,
+      "$id": {
+        ".write": "auth != null && auth.token.admin == true",
+        ".validate": "newData.hasChildren(['mediaUrl', 'isActive']) && newData.child('mediaUrl').isString() && newData.child('isActive').isBoolean()"
+      }
+    },
+    "movie_requests": {
+      ".read": "auth != null && (auth.token.admin == true || data.child('requestedByUid').val() == auth.uid || data.child('requestedByEmail').val() == auth.token.email)",
+      ".indexOn": "timestamp",
+      "$id": {
+        ".read": "auth != null && (auth.token.admin == true || data.child('requestedByUid').val() == auth.uid || data.child('requestedByEmail').val() == auth.token.email)",
+        ".write": "auth != null && (auth.token.admin == true || (!data.exists() && (newData.child('requestedByUid').val() == auth.uid || newData.child('requestedByEmail').val() == auth.token.email)))",
+        ".validate": "newData.hasChildren(['movieName', 'requestedByEmail', 'timestamp']) && newData.child('movieName').isString() && newData.child('timestamp').isNumber()"
+      }
+    },
+    "premium_requests": {
+      ".read": "auth != null && (auth.token.admin == true || (query.orderByChild == 'userId' && query.equalTo == auth.uid))",
+      ".indexOn": ["userId", "status", "timestamp"],
+      "$id": {
+        ".read": "auth != null && (auth.token.admin == true || data.child('userId').val() == auth.uid)",
+        ".write": "auth != null && (auth.token.admin == true || (!data.exists() && newData.child('userId').val() == auth.uid && newData.child('status').val() == 'pending'))",
+        ".validate": "newData.hasChildren(['userId', 'status', 'timestamp']) && newData.child('userId').isString() && newData.child('status').val() in ['pending', 'approved', 'rejected']"
+      }
+    },
+    "users": {
+      ".read": "auth != null && auth.token.admin == true",
+      "$uid": {
+        ".read": "auth != null && (auth.token.admin == true || auth.uid == $uid)",
+        ".write": false,
+        "displayName": {
+          ".write": "auth != null && auth.uid == $uid && newData.isString()"
+        },
+        "email": {
+          ".write": "auth != null && auth.uid == $uid && newData.isString()"
+        },
+        "lastLogin": {
+          ".write": "auth != null && auth.uid == $uid && newData.isNumber()"
+        },
+        "isBanned": {
+          ".write": "auth != null && auth.token.admin == true",
+          ".validate": "newData.isBoolean()"
+        },
+        "subscription": {
+          ".write": "auth != null && auth.token.admin == true",
+          ".validate": "newData.hasChildren(['isPremium', 'expiryDate', 'deviceLimit']) && newData.child('isPremium').isBoolean() && newData.child('expiryDate').isNumber() && newData.child('deviceLimit').isNumber() && newData.child('deviceLimit').val() > 0"
+        },
+        "fcmToken": {
+          ".write": "auth != null && auth.uid == $uid && newData.isString()"
+        },
+        "fcmTokens": {
+          "$token": {
+            ".write": "auth != null && auth.uid == $uid",
+            ".validate": "newData.val() == null || newData.hasChild('updatedAt')"
+          }
+        },
+        "devices": {
+          "$installationId": {
+            ".write": "auth != null && auth.uid == $uid && (newData.val() == null || newData.hasChildren(['lastSeen']))",
+            ".validate": "newData.child('lastSeen').isNumber() && (!data.exists() || newData.child('registeredAt').val() == data.child('registeredAt').val())"
+          }
+        }
+      }
+    },
+    "private_sources": {
+      ".read": "auth != null && auth.token.admin == true",
+      ".write": "auth != null && auth.token.admin == true"
+    },
+    "short_ids": {
+      "$shortId": {
+        ".read": "auth != null",
+        ".write": false
+      }
+    },
+    "restore_requests": {
+      ".read": "auth != null && auth.token.admin == true",
+      ".indexOn": ["userId", "status", "timestamp"],
+      "$id": {
+        ".write": "auth != null && (auth.token.admin == true || (!data.exists() && newData.child('userId').val() == auth.uid && newData.child('status').val() == 'pending'))",
+        ".validate": "newData.hasChildren(['userId', 'oldShortId', 'status', 'timestamp']) && newData.child('userId').isString() && newData.child('oldShortId').isString() && newData.child('oldShortId').val().length >= 4 && newData.child('oldShortId').val().length <= 20 && newData.child('status').isString() && newData.child('timestamp').isNumber()"
+      }
+    },
+    "app_settings": {
+      "payment": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin == true"
+      },
+      "avatars": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin == true"
+      },
+      "version": {
+        ".read": true,
+        ".write": "auth != null && auth.token.admin == true",
+        ".validate": "newData.child('versionCode').isNumber()"
+      }
+    },
+    "admins": {
+      ".read": false,
+      ".write": false
+    }
+  }
+}
