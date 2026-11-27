@@ -781,8 +781,33 @@ class MovieViewModel(application: Application) : AndroidViewModel(application) {
             } else {
                 sharedPrefs.edit().putInt("firebase_auth_retry_count", 0).apply()
                 _contentState.value = ContentState.Error(
-                    "Unable to connect to Mana Cinema services. Check your connection and try again."
+                    firebaseConnectionFailureMessage(e)
                 )
+            }
+        }
+    }
+
+    /**
+     * Keep the connection screen actionable. Anonymous sign-in is required by
+     * the catalog rules; a disabled provider or rejected API key cannot be fixed
+     * by repeatedly retrying the same request.
+     */
+    private fun firebaseConnectionFailureMessage(error: Throwable): String {
+        val authError = error as? com.google.firebase.auth.FirebaseAuthException
+        return when (authError?.errorCode) {
+            "ERROR_OPERATION_NOT_ALLOWED" ->
+                "Firebase anonymous sign-in is disabled. Enable Authentication > Sign-in method > Anonymous for the Mana Cinema Firebase project, then retry."
+            "ERROR_INVALID_API_KEY", "ERROR_APP_NOT_AUTHORIZED" ->
+                "Firebase rejected this app's API key. Check FIREBASE_API_KEY and the key's Firebase Authentication API restrictions."
+            "ERROR_NETWORK_REQUEST_FAILED" ->
+                "Firebase sign-in could not reach the server. Check your internet connection, VPN/firewall settings, and retry."
+            "ERROR_TOO_MANY_REQUESTS" ->
+                "Firebase temporarily blocked sign-in attempts. Wait a little while, then retry."
+            else -> when (error) {
+                is com.google.firebase.FirebaseNetworkException ->
+                    "Firebase sign-in could not reach the server. Check your internet connection, VPN/firewall settings, and retry."
+                else ->
+                    "Firebase sign-in failed (${authError?.errorCode ?: error.javaClass.simpleName}). Check the Firebase project/API key and ensure Anonymous sign-in is enabled."
             }
         }
     }
