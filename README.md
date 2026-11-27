@@ -68,6 +68,10 @@ The Gradle test task names above follow the Android plugin conventions and decla
 
 **Required for corresponding runtime features, not for the basic local debug build:** Firebase services/backend configuration and data are needed for remote catalog, profile/account synchronization, callable-function operations, and messaging. OneSignal configuration is needed for that notification integration; Google Cast support requires a Cast-compatible environment. Inspection does not establish live service availability, production deployment, or entitlement outcomes. Storage access policy cannot be inferred: no Firebase Storage rules file or mapping was found in the inspected configuration.
 
+### Firebase sign-in troubleshooting
+
+The client signs in anonymously before loading the catalog; the Realtime Database rules require an authenticated Firebase user. If startup reports a Firebase connection/authentication failure, check that **Authentication → Sign-in method → Anonymous** is enabled for the configured Firebase project, then verify that `FIREBASE_API_KEY` belongs to that project and permits Firebase Authentication. Network restrictions, VPN/firewall settings, and temporary Firebase rate limits can also prevent sign-in. The app reports known Firebase error codes with specific guidance after its bounded retries.
+
 Firebase Functions use Node.js 20, with source under `functions/`; `firebase.json` maps Realtime Database and Firestore rules and declares a Functions predeploy install command. Functions include notification triggers, callables for device registration/playback sources/Mana ID, and an admin-authenticated TMDB proxy. The proxy uses a Firebase Functions secret named `TMDB_API_KEY`; its value is not included here. No deploy, emulator, or project-selection commands were established by the inspection, so this README does not prescribe deployment steps.
 
 ## Release workflow
