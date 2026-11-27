@@ -1,2 +1,0 @@
-# Mana-Cinema
-Mana Cinema
