@@ -74,7 +74,9 @@ Firebase Functions use Node.js 20, with source under `functions/`; `firebase.jso
 
 The Android CI workflow runs on pushes to `main` or `master` and manual dispatch. It provisions JDK 17 and Android SDK 34 components, runs debug unit tests and assembles the debug APK, then uploads the APK and available reports.
 
-The release workflow runs for pushed tags matching `v*`. It runs `testDebugUnitTest` and `assembleRelease`, publishes the release APK as a workflow artifact, and creates a GitHub Release with the APK attached. The release APK path is `app/build/outputs/apk/release/app-release.apk`. Release builds enable minification and resource shrinking. The inspected workflow retains artifacts for 30 days.
+The release workflow runs for pushed tags matching `v*`. It runs `testDebugUnitTest` and `assembleRelease`, publishes the release APK as a workflow artifact, and creates a GitHub Release with the APK attached. It can also be manually dispatched from the `main` branch with a tag input, which rebuilds the source at that tag and uploads the APK to an existing release or creates the release if absent. For an automatic release, push a tag such as `v1.0.1` with `git tag v1.0.1 && git push origin v1.0.1`. The release APK path is `app/build/outputs/apk/release/app-release.apk`. Release builds enable minification and resource shrinking. The inspected workflow retains artifacts for 30 days.
+
+The current Android Gradle configuration still sets `versionCode = 1` and `versionName = "1.0"`; the Git tag labels the GitHub Release but does not change those values inside the APK. Update the app version fields before producing an APK intended to upgrade an existing installation.
 
 Configure these GitHub Actions secrets for release workflow operation:
 
